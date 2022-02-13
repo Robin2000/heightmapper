@@ -1,6 +1,5 @@
 /*jslint browser: true*/
 /*global Tangram, gui */
-
 map = (function () {
   'use strict';
   
@@ -304,6 +303,11 @@ map = (function () {
     gui.add(gui, 'map_labels').name("map labels").onChange(function(value) {
       toggleLabels(value);
     });
+
+	gui.map_terrain = true;
+    gui.add(gui, 'map_terrain').name("map terrain").onChange(function(value) {
+      toggleTerrain(value);
+    });
     
     // gui.API_KEY = query.api_key || 'mapzen-XXXXXX';
     // gui.add(gui, 'API_KEY').name("API KEY").onChange(function(value) {
@@ -548,6 +552,12 @@ map = (function () {
     // scene.config.layers.water.visible = active;
     scene.styles.toggletext.shaders.uniforms.u_alpha = active ? 1. : 0.;
     scene.requestRedraw();
+  }
+    // draw terrain
+  function toggleTerrain(active) {
+    // scene.config.layers.water.visible = active;
+	scene.styles.hillshade.shaders.uniforms.u_alpha = active ? 1. : 0.;
+	scene.requestRedraw();
   }
   
   document.onkeydown = function (e) {

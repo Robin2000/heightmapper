@@ -6,6 +6,9 @@ sources:
         url_params:
             api_key: L_qvqhVnQDW4VYQuPeILmA
 	    #http://www.topwow.top
+        #url: https://tile.nextzen.org/tilezen/terrain/v1/256/geotiff/{z}/{x}/{y}.tif
+        #url: https://tile.nextzen.org/tilezen/terrain/v1/256/normal/{z}/{x}/{y}.png
+
     mapzen:
         type: TopoJSON
         url: https://tile.nextzen.org/tilezen/vector/v1/256/all/{z}/{x}/{y}.topojson
@@ -15,8 +18,10 @@ sources:
 styles:
     hillshade:
         base: raster
+        blend: overlay
         shaders:
             uniforms:
+                u_alpha: 1.0
                 # set desired visible elevation range
                 u_max: 8900. # everest = 8848
                 u_min: 0. # sea level
@@ -37,7 +42,26 @@ styles:
                     float new_value = (height - u_min)/(u_max - u_min);
 
                     color.rgb = vec3(new_value);
-                    color.a = 1.0;
+                    color.a = u_alpha;
+    hillshadeNormal:
+        base: raster
+        blend: overlay
+        shaders:
+            uniforms:
+                u_alpha: 1.0
+            blocks:
+                color: |
+                    color.g = 1.0-color.g;
+                    color.a = u_alpha;
+    hillshadeGeotiff:
+        base: raster
+        blend: overlay
+        shaders:
+            uniforms:
+                u_alpha: 1.0
+            blocks:
+                color: |
+                    color.a = u_alpha;
     togglelines:
         base: lines
         blend: overlay
@@ -88,8 +112,8 @@ layers:
             draw:
                 togglelines:
                     order: 2
-                    width: .5px
-                    color: [0, .5, .5]
+                    width: 10px
+                    color: [0., .5, .5]
     boundaries:
         data: { source: mapzen }
         country:
@@ -113,8 +137,8 @@ layers:
         draw:
             togglelines:
                 order: 3
-                width: .25px
-                color: [0, .5, .5]
+                width: 6px
+                color: [1, .5, .5]
     places:
         data: { source: mapzen }
         draw:
