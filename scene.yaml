@@ -5,10 +5,14 @@ sources:
         max_zoom: 14
         url_params:
             api_key: L_qvqhVnQDW4VYQuPeILmA
-	    #http://www.topwow.top
         #url: https://tile.nextzen.org/tilezen/terrain/v1/256/geotiff/{z}/{x}/{y}.tif
         #url: https://tile.nextzen.org/tilezen/terrain/v1/256/normal/{z}/{x}/{y}.png
-
+    google:
+        type: Raster
+        url: http://127.0.0.1:8080/google/{x}/{y}/{z}
+        max_zoom: 16
+        url_params:
+            api_key: none
     mapzen:
         type: TopoJSON
         url: https://tile.nextzen.org/tilezen/vector/v1/256/all/{z}/{x}/{y}.topojson
@@ -53,7 +57,7 @@ styles:
                 color: |
                     color.g = 1.0-color.g;
                     color.a = u_alpha;
-    hillshadeGeotiff:
+    google_shade:
         base: raster
         blend: overlay
         shaders:
@@ -148,3 +152,8 @@ layers:
                     family: Arial
                     size: 10px
                     fill: cyan
+    google_img:
+        data: { source: google }
+        draw:
+            google_shade:
+                order: 5

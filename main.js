@@ -218,7 +218,7 @@ map = (function () {
     
     // get the width of the current view in meters
     // compare to the current elevation range in meters
-    // the ratio is the "height" of the current scene compared to its width â€“
+    // the ratio is the "height" of the current scene compared to its width ¨C
     // multiply it by the width of your 3D mesh to get the height
     var zrange = (gui.u_max - gui.u_min);
     var xscale = zrange / scene.view.size.meters.x;
@@ -309,6 +309,10 @@ map = (function () {
       toggleTerrain(value);
     });
     
+	gui.map_google = false;
+    gui.add(gui, 'map_google').name("map google").onChange(function(value) {
+      toggleGoogle(value);
+    });
     // gui.API_KEY = query.api_key || 'mapzen-XXXXXX';
     // gui.add(gui, 'API_KEY').name("API KEY").onChange(function(value) {
     //   scene.config.sources["elevation-high"].url_params.api_key = value;
@@ -557,6 +561,11 @@ map = (function () {
   function toggleTerrain(active) {
     // scene.config.layers.water.visible = active;
 	scene.styles.hillshade.shaders.uniforms.u_alpha = active ? 1. : 0.;
+	scene.requestRedraw();
+  }
+  // draw Google
+  function toggleGoogle(active) {
+	scene.styles.google_shade.shaders.uniforms.u_alpha = active ? 1. : 0.;
 	scene.requestRedraw();
   }
   
