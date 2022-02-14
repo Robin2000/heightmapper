@@ -318,11 +318,34 @@ map = (function () {
       toggleGoogle(value);
     });
 
-	gui.map_center = false;
-    gui.add(gui, 'map_center').name("map center").onChange(function(value) {
-      	map.panTo(new L.LatLng(30.197986,103.519369));
-    });
+    gui.map_center = function () {
+		map.panTo(new L.LatLng(30.197986,103.519369));
+    }
+    gui.add(gui, 'map_center');
 
+    gui.map_up = function () {
+		var wh=map.getSize();
+		map.panBy([0, -wh.y]);
+    }
+    gui.add(gui, 'map_up');
+
+    gui.map_down = function () {
+		var wh=map.getSize();
+		map.panBy([0, wh.y]);
+    }
+    gui.add(gui, 'map_down');
+
+	 gui.map_left = function () {
+		var wh=map.getSize();
+		map.panBy([-wh.x, 0]);
+    }
+    gui.add(gui, 'map_left');
+
+    gui.map_right = function () {
+		var wh=map.getSize();
+		map.panBy([wh.x, 0]);
+    }
+    gui.add(gui, 'map_right');
 
     // gui.API_KEY = query.api_key || 'mapzen-XXXXXX';
     // gui.add(gui, 'API_KEY').name("API KEY").onChange(function(value) {
