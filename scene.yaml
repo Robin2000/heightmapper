@@ -11,7 +11,7 @@ sources:
     google:
         type: Raster
         url: http://127.0.0.1:8080/google/{x}/{y}/{z}
-        max_zoom: 16
+        max_zoom: 20
         url_params:
             api_key: none
     mapzen:

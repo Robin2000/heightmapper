@@ -67,11 +67,15 @@ map = (function () {
   var map = L.map('map',
   {"keyboardZoomOffset" : .05,
   "inertiaDeceleration" : 10000,
+  "crs": L.CRS.EPSG3857,
+  "center": [30.197986,103.519369],
+  "zoom": 20,
   "zoomSnap" : .001}
   );
   
   var layer = Tangram.leafletLayer({
     scene: 'scene.yaml',
+	introspection: true,
     attribution: 'Map by <a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="https://github.com/tangrams/heightmapper" target="_blank">Fork This</a>',
     postUpdate: function() {
       if (gui.autoexpose && !stopped) {
@@ -313,6 +317,13 @@ map = (function () {
     gui.add(gui, 'map_google').name("map google").onChange(function(value) {
       toggleGoogle(value);
     });
+
+	gui.map_center = false;
+    gui.add(gui, 'map_center').name("map center").onChange(function(value) {
+      	map.panTo(new L.LatLng(30.197986,103.519369));
+    });
+
+
     // gui.API_KEY = query.api_key || 'mapzen-XXXXXX';
     // gui.add(gui, 'API_KEY').name("API KEY").onChange(function(value) {
     //   scene.config.sources["elevation-high"].url_params.api_key = value;
@@ -511,9 +522,6 @@ map = (function () {
   }
   
   function logRenderStep(title) {
-    console.log("=========================");
-    console.log(title);
-    console.log("=========================");
   }
   
   window.stop = stop;
