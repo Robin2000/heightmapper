@@ -5,6 +5,7 @@ import simple_http_server.server as server
 # 如果你的控制器代码（处理请求的函数）放在别的文件中，那么在你的 main.py 中，你必须将他都 import 进来。
 import google
 import nextzen
+import thunderforest
 
 
 def main(*args):

@@ -14,6 +14,12 @@ sources:
         max_zoom: 20
         url_params:
             api_key: none
+    thunderforest:
+        type: Raster
+        url: http://127.0.0.1:8080/thunderforest/{x}/{y}/{z}
+        max_zoom: 20
+        url_params:
+            api_key: none
     mapzen:
         type: TopoJSON
         url: https://tile.nextzen.org/tilezen/vector/v1/256/all/{z}/{x}/{y}.topojson
@@ -63,7 +69,16 @@ styles:
         blend: overlay
         shaders:
             uniforms:
-                u_alpha: 1.0
+                u_alpha: .0
+            blocks:
+                color: |
+                    color.a = u_alpha;
+    thunderforest_shade:
+        base: raster
+        blend: overlay
+        shaders:
+            uniforms:
+                u_alpha: .0
             blocks:
                 color: |
                     color.a = u_alpha;
@@ -158,3 +173,8 @@ layers:
         draw:
             google_shade:
                 order: 5
+    thunderforest_img:
+        data: { source: thunderforest }
+        draw:
+            thunderforest_shade:
+                order: 6

@@ -317,6 +317,10 @@ map = (function () {
     gui.add(gui, 'map_google').name("map google").onChange(function(value) {
       toggleGoogle(value);
     });
+	gui.map_thunderforest = false;
+    gui.add(gui, 'map_thunderforest').name("map thunderforest").onChange(function(value) {
+      toggleThunderforest(value);
+    });
 
     gui.map_center = function () {
 		map.panTo(new L.LatLng(30.197986,103.519369));
@@ -346,6 +350,11 @@ map = (function () {
 		map.panBy([wh.x, 0]);
     }
     gui.add(gui, 'map_right');
+
+    gui.u_zoom = map.getZoom();
+    gui.add(gui, 'u_zoom', 14, 20).name("zoom").onChange(function(value) {
+       map.setZoom(value);
+    });
 
     // gui.API_KEY = query.api_key || 'mapzen-XXXXXX';
     // gui.add(gui, 'API_KEY').name("API KEY").onChange(function(value) {
@@ -411,14 +420,32 @@ map = (function () {
   }
   
   async function renderView() {
+	var  size = map.getSize();
+	var info="width:"+size.x+"pixel, height:"+size.y+"pixel\r";
+
+	var centerLatLng = map.getCenter(); // get map center
+	var pointC = map.latLngToContainerPoint(centerLatLng); // convert to containerpoint (pixels)
+	var pointX = [pointC.x + 1, pointC.y]; // add one pixel to x
+	var pointY = [pointC.x, pointC.y + 1]; // add one pixel to y
+
+	// convert containerpoints to latlng's
+	var latLngC = map.containerPointToLatLng(pointC);
+	var latLngX = map.containerPointToLatLng(pointX);
+	var latLngY = map.containerPointToLatLng(pointY);
+
+	var distanceX = latLngC.distanceTo(latLngX); // calculate distance between c and x (latitude)
+	var distanceY = latLngC.distanceTo(latLngY); // calculate distance between c and y (longitude)
+
+    info+="width:"+Math.round(size.x*distanceX,3)/1000+"km, ";
+    info+="height:"+Math.round(size.y*distanceY,3)/1000+"km\r\r";
     // account for retina screens etc
     let zoomFactor = zoomRender * window.devicePixelRatio;
-    const originalX = scene.canvas.width;
-    const originalY = scene.canvas.height;
-    const outputX = originalX * zoomRender;
-    const outputY = originalY * zoomRender;
-    const size_mb = Math.ceil(scene.canvas.width * scene.canvas.height * zoomFactor * mb_factor);
-    const status = confirm(`Potential image size with ${zoomRender}x zoom render: ${size_mb} MB\nEstimated dimensions: ${outputX}X${outputY} pixels.\nAn Alert will display when the render is complete.\nThis will take some time, continue?`);
+    var originalX = scene.canvas.width;
+    var originalY = scene.canvas.height;
+    var outputX = originalX * zoomRender;
+    var outputY = originalY * zoomRender;
+    var size_mb = Math.ceil(scene.canvas.width * scene.canvas.height * zoomFactor * mb_factor);
+    var status = confirm(info+`Potential image size with ${zoomRender}x zoom render: ${size_mb} MB\nEstimated dimensions: ${outputX}X${outputY} pixels.\nAn Alert will display when the render is complete.\nThis will take some time, continue?`);
     
     if(!status) {
       return;
@@ -597,6 +624,11 @@ map = (function () {
   // draw Google
   function toggleGoogle(active) {
 	scene.styles.google_shade.shaders.uniforms.u_alpha = active ? 1. : 0.;
+	scene.requestRedraw();
+  }
+    // draw thunderforest
+  function toggleThunderforest(active) {
+	scene.styles.thunderforest_shade.shaders.uniforms.u_alpha = active ? 1. : 0.;
 	scene.requestRedraw();
   }
   
