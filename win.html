@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+    <!--[if lt IE 9]>
+      <script src="https://fastly.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://fastly.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <h1></h1>
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="jumbotron">
+				<h1>
+					Hello, mapper!
+				</h1>
+				<p>
+					custom winows size.
+				</p>
+				
+			</div> 
+			<button type="button" class="btn btn-default" onclick="openView(1009)">4033*4033</button>
+			<button type="button" class="btn btn-default" onclick="openView(1009)">2017*2017</button>
+			<button type="button" class="btn btn-default" onclick="openView(1009)">1009*1009</button> 
+			<button type="button" class="btn btn-default" onclick="openView(505)">505*505</button>
+			<button type="button" class="btn btn-default" onclick="openView(253)">253*253</button>
+			<button type="button" class="btn btn-default" onclick="openView(127)">127*127</button>
+		</div>
+	</div>
+</div>
+    <script src="https://fastly.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+  <script>
+  function openView(size) {
+  var strWindowFeatures = `
+    menubar=no,
+    location=no,
+    resizable=no,
+    scrollbars=no,
+    status=no,
+`;
+ strWindowFeatures+="width="+size+",height="+(size+1);
+  window.open("index.html#15.96057/30.3049/103.3591", "mapwin",strWindowFeatures);
+  }
+  </script>
+
+  </body>
+</html>

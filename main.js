@@ -352,7 +352,8 @@ map = (function () {
     gui.add(gui, 'map_right');
 
     gui.u_zoom = map.getZoom();
-    gui.add(gui, 'u_zoom', 14, 20).name("zoom").onChange(function(value) {
+    map.on("zoomend", function (e) { gui.u_zoom = map.getZoom(); });
+	gui.add(gui, 'u_zoom', 0, 20).name("zoom").onChange(function(value) {
        map.setZoom(value);
     });
 
@@ -388,12 +389,12 @@ map = (function () {
     });
     
     gui.renderName = renderName.name;
-    gui.add(gui, 'renderName').name('Render Name').onChange(function(value) {
+    /*gui.add(gui, 'renderName').name('Render Name').onChange(function(value) {
       renderName.name = value;
-    });
+    });*/
     
-    gui.render = function () {
-      renderView();
+    gui.render =function () {
+		renderTask("5");
     }
     
     gui.add(gui, 'render');
@@ -418,8 +419,74 @@ map = (function () {
   function go() {
     stopped = false;
   }
-  
-  async function renderView() {
+ function panFast(loc){
+	moving=true;
+	map.panBy(loc,{animate:false});
+ }
+
+var loading=false;
+layer.on('loading', function (event) {
+    //mapInstance.fireEvent('dataloading', event);
+	loading=true;
+});
+
+layer.on('load', function (event) {
+    //mapInstance.fireEvent('dataload', event);
+	loading=false;
+});
+
+ var delayTimeout=null;
+function delayRender(taskName) {
+	if(loading) {
+		delayTimeout = setTimeout("delayRender('"+taskname+"')",1000);
+		return;
+	}
+	if(delayTimeout!=null){
+		clearTimeout(delayTimeout);
+	}
+	renderTask(taskName);
+}
+async function renderTask(taskName) {
+		var wh=map.getSize();
+		//5center
+		renderView(false,taskName).then(function(tn){
+			if(tn=="5") {
+				//4left
+				panFast([-wh.x, 0]);
+
+				awaitViewComplete().then(async() => {delayRender("4");});
+			} else if(tn=="4") {
+				//1up
+				panFast([0, -wh.y]);
+				awaitViewComplete().then(async() => {delayRender("1");});
+			} else if(tn=="1") {
+				//2right
+				panFast([wh.x, 0]);
+				awaitViewComplete().then(async()=> {delayRender("2");});
+			}	else if(tn=="2") {
+				//3right
+				panFast([wh.x, 0]);
+				awaitViewComplete().then(async() => {delayRender("3");});
+			}	else if(tn=="3") {
+				//6down
+				panFast([0, wh.y]);
+				awaitViewComplete().then(async()=> {delayRender("6");});
+			}	else if(tn=="6") {
+				//9down
+				panFast([0, wh.y]);
+				awaitViewComplete().then(async() => {delayRender("9");});
+			}	else if(tn=="9") {
+				//8left
+				panFast([-wh.x, 0]);
+				awaitViewComplete().then(async() => {delayRender("8");});
+			}	else if(tn=="8") {
+				//7left
+				panFast([-wh.x, 0]);
+				awaitViewComplete().then(async() => {delayRender("7");});
+			}
+		});
+  }
+  async function renderView(silence,taskName) {
 	var  size = map.getSize();
 	var info="width:"+size.x+"pixel, height:"+size.y+"pixel\r";
 
@@ -445,12 +512,13 @@ map = (function () {
     var outputX = originalX * zoomRender;
     var outputY = originalY * zoomRender;
     var size_mb = Math.ceil(scene.canvas.width * scene.canvas.height * zoomFactor * mb_factor);
-    var status = confirm(info+`Potential image size with ${zoomRender}x zoom render: ${size_mb} MB\nEstimated dimensions: ${outputX}X${outputY} pixels.\nAn Alert will display when the render is complete.\nThis will take some time, continue?`);
-    
-    if(!status) {
-      return;
+	if(!silence) {
+		var status = confirm(info+`Potential image size with ${zoomRender}x zoom render: ${size_mb} MB\nEstimated dimensions: ${outputX}X${outputY} pixels.\nAn Alert will display when the render is complete.\nThis will take some time, continue?`);
+		
+		if(!status) {
+		  return;
+		}
     }
-    
     // Pre-redraw to make sure view is set:
     map.invalidateSize(true);
     
@@ -528,12 +596,17 @@ map = (function () {
     
     logRenderStep("Saving render");
     const blob = await getCanvasBlob(renderCanvas);
-    saveAs(blob, `${renderName.name ?? 'render'}.png`);
+    saveAs(blob, taskName+'.png');
     
     // Clean up:
-    logRenderStep("Cleaning up");
-    gui.autoexpose = preRenderAutoExposureState;
-    alert("Render complete!");
+	if(!silence) {
+		logRenderStep("Cleaning up");
+		gui.autoexpose = preRenderAutoExposureState;
+		alert("Render complete!");
+		return taskName;
+	} else {
+		return taskName;
+	}
   }
   
   function waitForSeconds(seconds) {
@@ -695,3 +768,4 @@ map = (function () {
   return map;
   
 }());
+
