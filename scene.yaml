@@ -73,6 +73,11 @@ styles:
             blocks:
                 color: |
                     color.a = u_alpha;
+                position: |
+                     vec3 pos = worldPosition().xyz;
+                     position.x -=230.;
+                     position.y +=350.;
+
     thunderforest_shade:
         base: raster
         blend: overlay
