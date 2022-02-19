@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 /*global Tangram, gui */
-map = (function () {
+amap = (function () {
   'use strict';
   
   var map_start_location = [0, 0, 2];
@@ -69,8 +69,8 @@ map = (function () {
   "inertiaDeceleration" : 10000,
   "crs": L.CRS.EPSG3857,
   "center": [30.197986,103.519369],
-  "zoom": 20,
-  "zoomSnap" : .001}
+  "zoom": 18,
+  "zoomSnap" : 1}
   );
   
   var layer = Tangram.leafletLayer({
@@ -426,22 +426,22 @@ map = (function () {
 
 var loading=false;
 layer.on('loading', function (event) {
-    //mapInstance.fireEvent('dataloading', event);
 	loading=true;
 });
 
 layer.on('load', function (event) {
-    //mapInstance.fireEvent('dataload', event);
 	loading=false;
 });
 
- var delayTimeout=null;
+var delayTimeout=null;
+
 function delayRender(taskName) {
 	if(loading) {
-		delayTimeout = setTimeout("delayRender('"+taskname+"')",1000);
+		delayTimeout = setTimeout("amap.delayRender('"+taskName+"')",1000);
 		return;
 	}
-	if(delayTimeout!=null){
+
+	if(delayTimeout!=null) {
 		clearTimeout(delayTimeout);
 	}
 	renderTask(taskName);
